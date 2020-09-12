@@ -22,16 +22,26 @@ void printArray(int a[], int size) {
 	printf("]\n");
 }
 
+void copy(int a[], int b[], int size) {
+	for (int i = 0; i < size; i++) {
+		b[i] = a[i];
+	}
+}
+
 int main(int argc, char** argv) {
 
 	int n;
 	scanf("%i", &n);
 	
 	int* a = (int*) malloc(sizeof(int) * n);
+	int* b = (int*) malloc(sizeof(int) * n);
 	
 	fill(a, n);
 	printArray(a, n);
+	copy(a, b, n);
+	printArray(b, n);
 	
 	free(a);
+	free(b);
 	return 0;
 }
