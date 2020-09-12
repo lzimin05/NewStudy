@@ -12,7 +12,7 @@ void fill(int a[], int size){
 void printArray(int a[], int size) {
 	printf("[");
 	for(int i = 0; i < size; i++) {
-		if (i = size - 1) {
+		if (i == size - 1) {
 			printf("%i", a[i]);
 		} else {
 			printf("%i, ", a[i]);
