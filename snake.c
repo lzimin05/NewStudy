@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 
 #define N 20
 #define M 30
@@ -11,7 +12,7 @@ int main(int argc, char** argv) {
     int x1 = -1;
     int y1 = 0;
     int score = 0;
-    while (N == 20) {  
+    while (true) {  
 	srand(time(NULL));
 	if (x1 == -1) {
 	    x1 = rand() % (N - 2) + 1;
@@ -24,6 +25,7 @@ int main(int argc, char** argv) {
 	    a[x1][y1] = '0';
 	    x1 = -1;
 	}
+        system("clear");
     	for(int i = 0; i < N; i++) {
 	    for(int j = 0; j < M; j++) {
 	    	if (i == 0 || j == 0 || i == N - 1 || j == M - 1) {
