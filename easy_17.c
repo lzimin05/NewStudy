@@ -11,6 +11,6 @@ int main(int argc, char** argv) {
     printf("%i\n", size);
     int k;
     scanf("%i", &k);
-    printf("\nk = %c\n", c[k]);
+    printf("\nk = %c\n", c[k-1]);
     return 0;
 }
