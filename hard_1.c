@@ -77,21 +77,7 @@ int balanceBrackets(char* a) {
     return 0;
 }
 
-int main(int argc, char** argv) {
-    printf("Введите строку для определения её длинны: ");
-    char* a = fillString(a);
-    int size = lengthString(a);
-    printf("Длинна строки = %i\n", size);
-    free(a);
-    printf("Введите строку, которую необходимо инвертировать: ");
-    a = fillString(a);
-    char* b = reverseString(a);
-    printf("Конвертированная строка = %s\n", b); 
-    free(a);
-    free(b);
-    printf("Введите строку для проверки баланса скобок: ");
-    a = fillString(a);    
-    int n = balanceBrackets(a);
+void switchforbrackets(int n) {
     switch (n) {
 	case(-1):
 	    printf("Нету скобок\n");
@@ -103,5 +89,134 @@ int main(int argc, char** argv) {
 	    printf("Баланс скобок нарушен\n");
  	    break;
     }
+}
+
+int occurenceSubstring(char* a, char* b) {
+    int sizeA = lengthString(a);
+    int n = 0;
+    for(int  i = 0; i < sizeA; i++) {
+	if(a[i] == b[0]) {
+	    int sizeB = lengthString(b);
+ 	    int g = 0;
+	    int i1 = i;
+	    bool proverka = true;
+	    while(g < sizeB) {
+		if(a[i1] != b[g]) {
+		    proverka = false;
+		    break;
+		}		
+		g++;
+		i1++;
+	    }
+	    if(proverka) {
+		return i+1;
+ 	    }
+    	}
+    }
+    return -1;
+}
+
+char* insertnString(char* a, char* b, int n) {
+    int size = lengthString(a);
+    if(size < n) {
+	char* c = "Error!!!";
+   	return c;
+    }  
+    size = size + lengthString(b);
+    char* c = malloc(sizeof(char)*size);
+    int i = 0;
+    while(n-i-1 != 0) {
+	c[i] = a[i];	
+	i++;
+    }
+    int size1 = lengthString(b);
+    size1--;
+    int i1 = 0;
+    while(size1 >= 0) {
+	c[i] = b[i1];
+	i1++;
+	i++;
+	size1--;
+    } 
+    n--;
+    while(n <= size-1) {
+ 	c[i] = a[n];
+	n++;
+	i++;
+    }
+    return c;
+}
+
+char* cutString(char* a, int size, int n) {
+    int proverka = lengthString(a);
+    if(proverka < size+n-1) {
+	char* b = "Error";
+ 	return b;
+    }
+    int i1 = 0;
+    char* b = malloc(sizeof(char)*size);
+    for(int i = n-1; i < size+n-1; i++) {
+	b[i1] = a[i];
+	i1++;
+    }
+    return b;
+}
+
+int main(int argc, char** argv) {
+    printf("\nВведите строку для определения её длинны: ");
+    char* a = fillString(a);
+    int size = lengthString(a);
+    printf("Длинна строки = %i\n\n", size);
+    free(a);
+
+    printf("Введите строку, которую необходимо инвертировать: ");
+    a = fillString(a);
+    char* b = reverseString(a);
+    printf("Конвертированная строка = %s\n\n", b); 
+    free(a);
+    free(b);
+
+    printf("Введите строку для проверки баланса скобок: ");
+    a = fillString(a);    
+    int n = balanceBrackets(a);
+    switchforbrackets(n);
+    free(a);
+
+    printf("\nВведите строку для получения позиции подстроки: ");
+    a = fillString(a);
+    printf("Введите подстроку: ");
+    b = fillString(b);
+    n = occurenceSubstring(a, b);
+    if(n == -1) {
+	printf("В строке нету такой подстроки\n");
+    } else {
+	printf("Номер позиции = %i\n\n", n);
+    }
+    free(a);
+    free(b);
+    
+    printf("Введите первую строку для конкатенации: ");
+    a = fillString(a);
+    printf("Введите вторую строку для конкатенации: ");
+    b = fillString(b);
+    printf("Введите позицию для вставляемой строки: ");
+    scanf("%i", &n);
+    char* c = insertnString(a, b, n);
+    printf("%s\n\n", c);
+    free(a);
+    free(b);
+    free(c);
+    
+    printf("Введите строку из которой необходимо скопировать n символов: ");
+    a = fillString(a);
+    printf("Введите длину копируемой строки: ");
+    scanf("%i", &size);
+    printf("Введите номер позиции, начиная с которой необходимо скопировать строку: ");
+    scanf("%i", &n);    
+    b = cutString(a, size, n);
+    printf("%s\n", b);
+    free(a);
+    free(b);
+    
     return 0;
 }
