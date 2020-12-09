@@ -16,7 +16,10 @@ int main(int argc) {
     }
     printf("\n\n\n");
     int sit = 1; //	1 - |; 2 - / 
-    for(int i = 2; i <= 10; i++) {
+    for(int i = 2; i <= size; i++) {
+	if(i*i > size) {
+	    break;
+	}
 	if(i != 0) {
 	    for(int g = i+1; g <= size; g++) {
 		if(a[g] % i == 0) {
