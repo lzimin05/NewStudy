@@ -164,6 +164,8 @@ struct setting_for_game costomization (int z, int h) {
 	case(6):
 	    costomization.colortxt = 35;
 	    break;
+	default:
+	    costomization.colortxt = 37;
     }
     switch(h) {
 	case(1):
@@ -184,6 +186,8 @@ struct setting_for_game costomization (int z, int h) {
 	case(6):
 	    costomization.colorbg = 45;
 	    break;
+	default:
+	    costomization.colorbg = 40;
     }
     return costomization;
 }
@@ -206,8 +210,8 @@ int main(int argc, char** argv) {
     char a[M][N];
     struct snaky snake;
     snake.size = 0;
-    snake.x = (int*) malloc(sizeof(int)*snake.size);
-    snake.y = (int*) malloc(sizeof(int)*snake.size);
+    snake.x = (int*) malloc(sizeof(int)*(snake.size+1));
+    snake.y = (int*) malloc(sizeof(int)*(snake.size+1));
     snake.x[snake.size] = N/2; 
     snake.y[snake.size] = M/2;
 
@@ -217,11 +221,12 @@ int main(int argc, char** argv) {
     bool proverka = true;
     srand(time(NULL));
     while(proverka) {
+	system("clear");
 	food.pusto = (N-2)*(M-2)-snake.size; //сколько пустого места
 	if(food.x == -1) {
 	    food.apple = rand() % food.pusto;
 	}
-
+	
 	for(int i = 0; i < M; i++) {
 	    for(int g = 0; g < N; g++) {
 		a[i][g] = ' ';
@@ -257,10 +262,8 @@ int main(int argc, char** argv) {
 		}
 
 		if(snake.x[0] == food.x && snake.y[0] == food.y && i == food.y && g == food.x) {
-		    a[i][g] = '@';
-		    snake.size++;		//змейка и яблоко в одной координаты
-		    //snake.x[snake.size] = snake.x[snake.size-1];
-		    //wsnake.y[snake.size] = snake.y[snake.size-1];
+		    a[i][g] = '@';	//змейка и яблоко в одной координаты
+		    snake.size++;	
 		    food.x = -1;	//делать новое яблоко
 		}
 		printf("\e[%i;%im%c\e[0m", setting.colortxt, setting.colorbg, a[i][g]);
@@ -271,19 +274,41 @@ int main(int argc, char** argv) {
 	    snake.x[i] = snake.x[i-1];
   	    snake.y[i] = snake.y[i-1];
 	}
-
-	control = getch();	
+	printf("\e[1;34mYour score: %i\e[0m\n", snake.size);
+	char pr = control;
+	control = getch();
+	if(snake.size > 0) {
+	    while(true) {
+	    	if(pr == 'w' && control != 's') {
+		    break;
+	    	}
+	   	if(pr == 's' && control != 'w') {
+		    break;				//голова не может идти к хвосту
+	        }
+	    	if(pr == 'a' && control != 'd') {
+		    break;
+	   	}
+	    	if(pr == 'd' && control != 'a') {
+		    break;
+	    	}
+		control = getch();
+	    }
+	}	
 
 	if(control == 'w') snake.y[0]--;
 	if(control == 's') snake.y[0]++;
 	if(control == 'd') snake.x[0]++;						//движение змейки
 	if(control == 'a') snake.x[0]--;
+	for(int i = 0; i <= snake.size; i++) {
+	    for(int g = 0; g <= snake.size; g++) {
+		if(i != g && snake.x[i] == snake.x[g] && snake.y[i] == snake.y[g]) {	//если голова с хвостом врезались
+		    proverka = false;
+		}
+	    }
+	}
 	if(snake.x[0] == 0 || snake.x[0] == N-1 || snake.y[0] == 0 || snake.y[0] == M-1) {
 	    proverka = false;
-	    break;
 	}
-	system("clear");
-
     } 
     
     printf("\e[1;31mGame Over\e[0m\n");
