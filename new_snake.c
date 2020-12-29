@@ -206,8 +206,6 @@ int main(int argc, char** argv) {
     char control = 'w';
     int N = setting.N;
     int M = setting.M;
-    N = 10;
-    M = 5;
     //сама игра:
     char a[M][N];
 
