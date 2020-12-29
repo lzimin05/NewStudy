@@ -206,23 +206,28 @@ int main(int argc, char** argv) {
     char control = 'w';
     int N = setting.N;
     int M = setting.M;
+    N = 10;
+    M = 5;
     //сама игра:
     char a[M][N];
-    struct snaky snake;
-    snake.size = 0;
-    snake.x = (int*) malloc(sizeof(int)*(snake.size+1));
-    snake.y = (int*) malloc(sizeof(int)*(snake.size+1));
-    snake.x[snake.size] = N/2; 
-    snake.y[snake.size] = M/2;
 
     struct foood food;
     food.x = -1;
     food.y = -1;
     bool proverka = true;
     srand(time(NULL));
+    struct snaky snake;
+    snake.size = 0;
+    snake.x = (int*) malloc(((N-2)*(M-2)-snake.size)*sizeof(int));
+    snake.y = (int*) malloc(((N-2)*(M-2)-snake.size)*sizeof(int));
+    snake.x[snake.size] = N/2; 
+    snake.y[snake.size] = M/2;
     while(proverka) {
 	system("clear");
-	food.pusto = (N-2)*(M-2)-snake.size; //сколько пустого места
+	food.pusto = ((N-2)*(M-2)-snake.size)-1; //сколько пустого места
+	if(food.pusto == 0) {
+	    break;	
+	}
 	if(food.x == -1) {
 	    food.apple = rand() % food.pusto;
 	}
@@ -301,17 +306,20 @@ int main(int argc, char** argv) {
 	if(control == 'a') snake.x[0]--;
 	for(int i = 0; i <= snake.size; i++) {
 	    for(int g = 0; g <= snake.size; g++) {
-		if(i != g && snake.x[i] == snake.x[g] && snake.y[i] == snake.y[g]) {	//если голова с хвостом врезались
+		if(i != g && snake.x[i] == snake.x[g] && snake.y[i] == snake.y[g]) {	//если голова с хвостом врезались	
 		    proverka = false;
 		}
 	    }
 	}
-	if(snake.x[0] == 0 || snake.x[0] == N-1 || snake.y[0] == 0 || snake.y[0] == M-1) {
+	if(snake.x[0] == 0 || snake.x[0] == N-1 || snake.y[0] == 0 || snake.y[0] == M-1) { //если голово зашла за пределы
 	    proverka = false;
 	}
     } 
-    
-    printf("\e[1;31mGame Over\e[0m\n");
+    if (food.pusto == 0) {
+	printf("\e[1;34mYou are winner!\e[0m\n");
+    } else {
+        printf("\e[1;31mGame Over\e[0m\n");
+    }
     return 0;
 }
 
