@@ -3,6 +3,10 @@
 #include <stdbool.h>
 #include <termios.h>
 #include <unistd.h>
+#include <signal.h>
+#include <string.h>
+#include <time.h>
+
 
 struct setting_for_game {
     int colortxt;
@@ -24,13 +28,18 @@ int getch(void)
     return ch;
 }
 
+struct snaky {
+    int* x;
+    int* y;
+    int size; //размер змеи
+};
 
 struct setting_for_game menu() {
     char sit; //куда заходить
     int colortxt1 = 0; //цвет текста
     int colorbg1 = 0; //цвет фона
-    int N1 = 20;
-    int M1 = 30;
+    int N1 = 30;
+    int M1 = 20;
     while(sit - '0' != 1) {
 	printf("\t\e[1;31mSNAKE\e[0m\n");
     	printf("\e[1;34mMenu:\e[0m\n");
@@ -179,16 +188,105 @@ struct setting_for_game costomization (int z, int h) {
     return costomization;
 }
 
+struct foood {
+    int x;
+    int y;
+    int pusto; //пустых клеток
+    int apple; //яблоко
+};
+
 int main(int argc, char** argv) {
     system("clear");
     struct setting_for_game setting = menu();
     setting = costomization(setting.colortxt, setting.colorbg);
-    printf("\e[%i;%im", setting.colortxt, setting.colorbg);
-    printf("\n\n%i %i\n%i %i\n", setting.colortxt, setting.colorbg, setting.N, setting.M);
-    
-    //сама игра:    
+    char control = 'w';
+    int N = setting.N;
+    int M = setting.M;
+    //сама игра:
+    char a[M][N];
+    struct snaky snake;
+    snake.size = 0;
+    snake.x = (int*) malloc(sizeof(int)*snake.size);
+    snake.y = (int*) malloc(sizeof(int)*snake.size);
+    snake.x[snake.size] = N/2; 
+    snake.y[snake.size] = M/2;
 
-    printf("\e[0m");
+    struct foood food;
+    food.x = -1;
+    food.y = -1;
+    bool proverka = true;
+    srand(time(NULL));
+    while(proverka) {
+	food.pusto = (N-2)*(M-2)-snake.size; //сколько пустого места
+	if(food.x == -1) {
+	    food.apple = rand() % food.pusto;
+	}
+
+	for(int i = 0; i < M; i++) {
+	    for(int g = 0; g < N; g++) {
+		a[i][g] = ' ';
+		if(i == 0 || g == 0 || i == M-1 || g == N-1) {	//растановка обычного поля (без змеи и еды)
+		    a[i][g] = '#';
+		}
+	    }
+	}
+
+	for(int size = snake.size; size >= 0; size--) {
+	    //printf("%i - %i", snake.x[size], snake.y[size]);
+	    for(int i = 0; i < M; i++) {
+		for(int g = 0; g < N; g++) {
+		    if(snake.x[size] == g && snake.y[size] == i) {
+			a[i][g] = '@';
+		    }						//змейка
+		}
+	    }
+	}
+	for(int i = 0; i < M; i++) {
+	    for(int g = 0; g < N; g++) {
+		if(a[i][g] == ' ') {
+		    if(food.apple > 0) {
+		    	food.apple--;
+		    } else if (food.apple == 0) {		//змейка и яблоко
+		 	food.x = g;
+			food.y = i;
+			food.apple = -1; //поставили яблоко
+		    }
+		}
+		if(food.x == g && food.y == i) {
+		    a[i][g] = '*';
+		}
+
+		if(snake.x[0] == food.x && snake.y[0] == food.y && i == food.y && g == food.x) {
+		    a[i][g] = '@';
+		    snake.size++;		//змейка и яблоко в одной координаты
+		    //snake.x[snake.size] = snake.x[snake.size-1];
+		    //wsnake.y[snake.size] = snake.y[snake.size-1];
+		    food.x = -1;	//делать новое яблоко
+		}
+		printf("\e[%i;%im%c\e[0m", setting.colortxt, setting.colorbg, a[i][g]);
+	    }
+	    printf("\n");
+	}
+	for(int i = snake.size; i > 0; i--) {
+	    snake.x[i] = snake.x[i-1];
+  	    snake.y[i] = snake.y[i-1];
+	}
+
+	control = getch();	
+
+	if(control == 'w') snake.y[0]--;
+	if(control == 's') snake.y[0]++;
+	if(control == 'd') snake.x[0]++;						//движение змейки
+	if(control == 'a') snake.x[0]--;
+	if(snake.x[0] == 0 || snake.x[0] == N-1 || snake.y[0] == 0 || snake.y[0] == M-1) {
+	    proverka = false;
+	    break;
+	}
+	system("clear");
+
+    } 
+    
+    printf("\e[1;31mGame Over\e[0m\n");
     return 0;
 }
 
