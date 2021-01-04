@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <termios.h>
-#include <unistd.h>
 #include <signal.h>
+#include <unistd.h>
 #include <string.h>
 #include <time.h>
 
@@ -207,6 +207,7 @@ int main(int argc, char** argv) {
     int N = setting.N;
     int M = setting.M;
     //сама игра:
+    
     char a[M][N];
 
     struct foood food;
@@ -282,18 +283,20 @@ int main(int argc, char** argv) {
 	control = getch();
 	if(snake.size > 0) {
 	    while(true) {
-	    	if(pr == 'w' && control != 's') {
-		    break;
-	    	}
-	   	if(pr == 's' && control != 'w') {
-		    break;				//голова не может идти к хвосту
-	        }
-	    	if(pr == 'a' && control != 'd') {
-		    break;
-	   	}
-	    	if(pr == 'd' && control != 'a') {
-		    break;
-	    	}
+		if(control == 'w' || control == 's' || control == 'a' || control == 'd') {
+	    	    if(pr == 'w' && control != 's') {
+		    	break;
+	    	    }
+	   	    if(pr == 's' && control != 'w') {
+		     	break;				//голова не может идти к хвосту
+	            }
+	    	    if(pr == 'a' && control != 'd') {
+		    	break;
+	   	    }
+	    	    if(pr == 'd' && control != 'a') {
+		    	break;
+	    	    }
+		}
 		control = getch();
 	    }
 	}	
